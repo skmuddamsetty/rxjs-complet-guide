@@ -91,7 +91,14 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
     //   });
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    // stream of clicks
+    fromEvent(this.saveButton.nativeElement, "click")
+      // using exhaustMap here to make sure that repeated clicks on save button do not trigger http requests while a request is still ongoing
+      // in other words if there are other observables initiated while one observable is running all ther other source observables are ignored and are never executed
+      .pipe(exhaustMap(() => this.saveCourse(this.form.value)))
+      .subscribe();
+  }
 
   close() {
     this.dialogRef.close();
