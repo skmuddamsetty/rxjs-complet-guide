@@ -51,7 +51,12 @@ export class HomeComponent implements OnInit {
 
     // Rxjs Reactive approach to populate the beginner and advanced courses
     const courses$: Observable<Course[]> = http$.pipe(
-      map((res) => Object.values(res["payload"]))
+      // using tap operator to produce side effects outside of the observable chain
+      // here we are logging something to the console and inside tap we can do anything. but this does not effect the observable chain
+      tap(() => console.log("Http Request Executed!")),
+      map((res) => Object.values(res["payload"])),
+      // using shareReplay to avoid multiple network calls which occurs due to multiple subscriptions
+      shareReplay()
     );
     this.beginnersCourses$ = courses$.pipe(
       map((courses) =>
