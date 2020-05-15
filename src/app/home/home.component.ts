@@ -19,6 +19,8 @@ import { createHttpObservable } from "../common/util";
 export class HomeComponent implements OnInit {
   beginnersCourses: Course[];
   advancedCourses: Course[];
+  beginnersCourses$: Observable<Course[]>;
+  advancedCourses$: Observable<Course[]>;
   constructor() {}
 
   ngOnInit() {
@@ -48,5 +50,18 @@ export class HomeComponent implements OnInit {
     // );
 
     // Rxjs Reactive approach to populate the beginner and advanced courses
+    const courses$: Observable<Course[]> = http$.pipe(
+      map((res) => Object.values(res["payload"]))
+    );
+    this.beginnersCourses$ = courses$.pipe(
+      map((courses) =>
+        courses.filter((course) => course.category === "BEGINNER")
+      )
+    );
+    this.advancedCourses$ = courses$.pipe(
+      map((courses) =>
+        courses.filter((course) => course.category === "ADVANCED")
+      )
+    );
   }
 }
