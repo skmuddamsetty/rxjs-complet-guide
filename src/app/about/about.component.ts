@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { interval, timer, fromEvent, Observable, noop } from "rxjs";
+import { interval, timer, fromEvent, Observable, noop, of, concat } from "rxjs";
 import { map } from "rxjs/operators";
 import { createHttpObservable } from "../common/util";
 
@@ -95,5 +95,16 @@ export class AboutComponent implements OnInit {
     //   noop(),
     //   () => console.log("http stream completed!")
     // );
+    // // *****************************************************************************
+    // // Combining Observables demo
+    // const source1$ = of(1, 2, 3);
+    // const source2$ = of(4, 5, 6);
+    // // const source3$ = interval(1000);
+    // // sequential concatenation of observables
+    // // concat here subscribes to the first observable and only when the first observable completes, we subscribe to the second observable
+    // // for ex: if source1$ nevers ends source2$ is never subscribed and value is never emitted
+    // const results$ = concat(source1$, source2$);
+    // results$.subscribe(console.log);
+    // // *****************************************************************************
   }
 }
