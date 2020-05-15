@@ -58,7 +58,14 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
         // for every incoming changes we are creating a saveCourse observable and going to concatenate all those observables so that save operations are sequential i.e. one after the other
         // here we do not need to subscribe because the subscription is automatically taken care by the concatMap operator
         // simply put --> contactMap creates new observables, subscribes to them and concatenates them together
+        // if the order of the observables is important we have to use concatMap
         concatMap((changes) => this.saveCourse(changes))
+        // *************************************************
+        // mergeMap is useful for making the asynchronous calls in parallel
+        // this emits the value from the multiple observables as they arrive, that is this is not sequential
+        // mergeMap automatically subscribes
+        // if the order of the observables is not important we have can use mergMap to execute the calls parallely
+        // mergeMap((changes) => this.saveCourse(changes))
       )
       // subscribing to the form changes
       .subscribe();

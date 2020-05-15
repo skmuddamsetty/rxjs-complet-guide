@@ -115,11 +115,11 @@ export class AboutComponent implements OnInit {
     // const results$ = concat(source1$, source2$);
     // results$.subscribe(console.log);
     // // *****************************************************************************
-    // mergeMap example
-    // merge strategy is ideal for running long running operations in parallel and getting the result of each of the operations combined
-    const interval1$ = interval(1000);
-    const interval2$ = interval1$.pipe(map((val) => val * 10));
-    const result$ = merge(interval1$, interval2$);
-    result$.subscribe(console.log);
+    // // mergeMap example
+    // // merge strategy is ideal for running long running operations in parallel and getting the result of each of the operations combined
+    // const interval1$ = interval(1000);
+    // const interval2$ = interval1$.pipe(map((val) => val * 10));
+    // const result$ = merge(interval1$, interval2$);
+    // result$.subscribe(console.log);
   }
 }
