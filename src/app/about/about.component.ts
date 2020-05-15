@@ -74,25 +74,26 @@ export class AboutComponent implements OnInit {
     //   // this is executed once the event has been completed and the observable is terminated
     //   () => console.log("completed!")
     // );
-
     // using browser fetch API, fetch returns a promise so this will be immediately executed, so we do not want this to be executed immediately and we want to convert this to an observable
     // fetch("/api/courses")
     //   .then((res) => res.json())
     //   .then((body) => body)
     //   .then((data) => console.log(data));
     // using Observable.create API to create the observable
-    const http$ = createHttpObservable("/api/courses");
-    // transforming the response of /api/courses observable to courses observable using the map operator
-    // using pipe to chain the map operator
-    const courses$ = http$.pipe(map((res) => Object.values(res["payload"])));
-    courses$.subscribe(
-      (courses) => console.log(courses),
-      // (err) => console.log(err),
-      // or if we do not have any error handling in the observable
-      // () => {} or noop(),
-      // noop stands for no operation and is similar to writing () => {}
-      noop(),
-      () => console.log("http stream completed!")
-    );
+    // ************************************************************************
+    // Moving this logic to home component
+    // const http$ = createHttpObservable("/api/courses");
+    // // transforming the response of /api/courses observable to courses observable using the map operator
+    // // using pipe to chain the map operator
+    // const courses$ = http$.pipe(map((res) => Object.values(res["payload"])));
+    // courses$.subscribe(
+    //   (courses) => console.log(courses),
+    //   // (err) => console.log(err),
+    //   // or if we do not have any error handling in the observable
+    //   // () => {} or noop(),
+    //   // noop stands for no operation and is similar to writing () => {}
+    //   noop(),
+    //   () => console.log("http stream completed!")
+    // );
   }
 }
