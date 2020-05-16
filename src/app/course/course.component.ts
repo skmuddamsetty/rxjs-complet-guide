@@ -76,6 +76,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
     this.lessons$ = fromEvent<any>(this.input.nativeElement, "keyup").pipe(
       map((event) => event.target.value),
       startWith(""),
+      debug(RxJsLogginLevel.INFO, "search: "),
       // using debounceTime here to check if the obtained input has been stable for 400 ms, if the obtained input is not stable for 400 ms then that observable will be terminated
       // only the input which has been stable for 400 ms or greater are going to pass to the next step after debounceTime
       debounceTime(400),
