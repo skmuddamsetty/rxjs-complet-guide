@@ -56,7 +56,12 @@ export class HomeComponent implements OnInit {
       tap(() => console.log("Http Request Executed!")),
       map((res) => Object.values(res["payload"])),
       // using shareReplay to avoid multiple network calls which occurs due to multiple subscriptions
-      shareReplay()
+      shareReplay(),
+      // ************************* Catching errors 3 strategies *****************
+      // Recovering from error with some other values example
+      // example of providing an alternative observable in case if the backend service throws an error
+      // i.e. here we are trying to recover from the error by providing some alternate value to the course$
+      catchError((err) => of([]))
     );
     this.beginnersCourses$ = courses$.pipe(
       map((courses) =>
