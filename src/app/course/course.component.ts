@@ -45,5 +45,16 @@ export class CourseComponent implements OnInit, AfterViewInit {
     ).pipe(map((res) => res["payload"]));
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    fromEvent<any>(this.input.nativeElement, "keyup")
+      .pipe(
+        map((event) => event.target.value),
+        // using debounceTime here to check if the obtained input has been stable for 400 ms, if the obtained input is not stable for 400 ms then that observable will be terminated
+        // only the input which has been stable for 400 ms or greater are going to pass to the next step after debounceTime
+        debounceTime(400),
+        // this also eliminates duplicates, if two consecutive values are same then we want to emit only one value
+        distinctUntilChanged()
+      )
+      .subscribe(console.log);
+  }
 }
