@@ -67,7 +67,7 @@ export class HomeComponent implements OnInit {
       tap(() => console.log("Http Request Executed!")),
       map((res) => Object.values(res["payload"])),
       // using shareReplay to avoid multiple network calls which occurs due to multiple subscriptions
-      shareReplay()
+      shareReplay(),
       // ************************* Catching errors 3 strategies *****************
       // Recovering from error with some other values example
       // example of providing an alternative observable in case if the backend service throws an error
@@ -88,6 +88,13 @@ export class HomeComponent implements OnInit {
       // finalize(() => {
       //   console.log("finalize method in course$!");
       // })
+      // **************************** retry strategy***************************
+      // errors property inside retryWhen is obtained each time when there is an error from the service
+      // when the http call fails and errors out the http$ will be terminated, but retyrWhen will cerate a brand new observable and subscibes to the new observable and it does that untill the stream does not error out
+      // with the below statement it retries immediately
+      // retryWhen((errors) => errors),
+      // with the below statement it retries after two seconds
+      retryWhen((errors) => errors.pipe(delayWhen(() => timer(2000))))
     );
 
     this.beginnersCourses$ = courses$.pipe(
