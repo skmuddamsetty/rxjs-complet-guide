@@ -121,5 +121,10 @@ export class AboutComponent implements OnInit {
     // const interval2$ = interval1$.pipe(map((val) => val * 10));
     // const result$ = merge(interval1$, interval2$);
     // result$.subscribe(console.log);
+    // ***********************************************
+    // observable cancellation example
+    const http$ = createHttpObservable("/api/courses");
+    const sub = http$.subscribe(console.log);
+    setTimeout(() => sub.unsubscribe(), 0);
   }
 }

@@ -3,7 +3,9 @@ import { Observable } from "rxjs";
 export function createHttpObservable(url: string) {
   return Observable.create((observer) => {
     // observer here helps us to emit new values, error out the observable or complete the observable
-    fetch(url)
+    const controller = new AbortController();
+    const signal = controller.signal;
+    fetch(url, { signal })
       .then((res) => res.json())
       .then((body) => {
         // using next we are setting the data to the http stream
@@ -16,5 +18,8 @@ export function createHttpObservable(url: string) {
         // sending the error in case of error
         observer.error(err);
       });
+    // this below line enables cancellation of the observable
+    // this is executed by the unsubscribe method from caller
+    return () => controller.abort();
   });
 }
