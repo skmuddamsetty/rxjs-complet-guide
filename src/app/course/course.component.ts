@@ -23,6 +23,7 @@ import {
 import { merge, fromEvent, Observable, concat } from "rxjs";
 import { Lesson } from "../model/lesson";
 import { createHttpObservable } from "../common/util";
+import { debug, RxJsLoggingLevel, setRxJsLoggingLevel } from "../common/debug";
 
 @Component({
   selector: "course",
@@ -39,9 +40,12 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.courseId = this.route.snapshot.params["id"];
-    this.course$ = createHttpObservable(`/api/courses/${this.courseId}`);
+    this.course$ = createHttpObservable(`/api/courses/${this.courseId}`).pipe(
+      debug(RxJsLoggingLevel.INFO, "course value: ")
+    );
     // moved the below line to ngAfterViewInit as the lessons$ has to be changed after the user searches for a lesson
     // this.lessons$ = this.loadLessons();
+    setRxJsLoggingLevel(RxJsLoggingLevel.DEBUG);
   }
 
   ngAfterViewInit() {
@@ -76,7 +80,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
     this.lessons$ = fromEvent<any>(this.input.nativeElement, "keyup").pipe(
       map((event) => event.target.value),
       startWith(""),
-      debug(RxJsLogginLevel.INFO, "search: "),
+      debug(RxJsLoggingLevel.TRACE, "search: "),
       // using debounceTime here to check if the obtained input has been stable for 400 ms, if the obtained input is not stable for 400 ms then that observable will be terminated
       // only the input which has been stable for 400 ms or greater are going to pass to the next step after debounceTime
       debounceTime(400),
@@ -87,6 +91,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
       // *****************************************************
       // switchMap helps in cancelling the ongoing requests and switch to the new request which in this case is the search term.
       switchMap((searchTerm) => this.loadLessons(searchTerm)),
+      debug(RxJsLoggingLevel.DEBUG, "response from searchLessons$: "),
       tap((res) => console.log("response from searchLessons$", res))
     );
   }
