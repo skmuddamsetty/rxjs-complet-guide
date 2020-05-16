@@ -45,11 +45,37 @@ export class CourseComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    const searchLessons$ = fromEvent<any>(
-      this.input.nativeElement,
-      "keyup"
-    ).pipe(
+    // // ************ Without refactoring using concat method******************
+    // const searchLessons$ = fromEvent<any>(
+    //   this.input.nativeElement,
+    //   "keyup"
+    // ).pipe(
+    //   map((event) => event.target.value),
+    //   // using debounceTime here to check if the obtained input has been stable for 400 ms, if the obtained input is not stable for 400 ms then that observable will be terminated
+    //   // only the input which has been stable for 400 ms or greater are going to pass to the next step after debounceTime
+    //   debounceTime(400),
+    //   // this also eliminates duplicates, if two consecutive values are same then we want to emit only one value
+    //   distinctUntilChanged(),
+    //   // concatMap is not useful here because even with the debounceTime and distinctUntillChanged operators, we might end up in calling database sometimes, when using concatMap all calls are sequential and the ongoing request are not cancelled. here we want to canel the ongoing request if there is a new search term input and switch to the new request
+    //   // concatMap((searchTerm) => this.loadLessons(searchTerm))
+    //   // *****************************************************
+    //   // switchMap helps in cancelling the ongoing requests and switch to the new request which in this case is the search term.
+    //   switchMap((searchTerm) => this.loadLessons(searchTerm)),
+    //   tap((res) => console.log("response from searchLessons$", res))
+    // );
+    // const initialLessons$ = this.loadLessons().pipe(
+    //   tap((val) => console.log("response from initialLessons$", val))
+    // );
+    // // using concat to concat both the observables
+    // // here initialLessons$ is going to have an array of lessons and searchLessons$ will be empty
+    // // and after the user start searching, initialLessons$ is going to be empty and only searchLessons$ will be having the values of lessons
+    // this.lessons$ = concat(initialLessons$, searchLessons$);
+
+    // **********Refactoring the code to simplify this component to get rid of concat method and use startWith Operator***************
+
+    this.lessons$ = fromEvent<any>(this.input.nativeElement, "keyup").pipe(
       map((event) => event.target.value),
+      startWith(""),
       // using debounceTime here to check if the obtained input has been stable for 400 ms, if the obtained input is not stable for 400 ms then that observable will be terminated
       // only the input which has been stable for 400 ms or greater are going to pass to the next step after debounceTime
       debounceTime(400),
@@ -62,13 +88,6 @@ export class CourseComponent implements OnInit, AfterViewInit {
       switchMap((searchTerm) => this.loadLessons(searchTerm)),
       tap((res) => console.log("response from searchLessons$", res))
     );
-    const initialLessons$ = this.loadLessons().pipe(
-      tap((val) => console.log("response from initialLessons$", val))
-    );
-    // using concat to concat both the observables
-    // here initialLessons$ is going to have an array of lessons and searchLessons$ will be empty
-    // and after the user start searching, initialLessons$ is going to be empty and only searchLessons$ will be having the values of lessons
-    this.lessons$ = concat(initialLessons$, searchLessons$);
   }
 
   loadLessons(searchTerm = ""): Observable<Lesson[]> {
