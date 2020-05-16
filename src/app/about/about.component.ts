@@ -122,9 +122,9 @@ export class AboutComponent implements OnInit {
     // const result$ = merge(interval1$, interval2$);
     // result$.subscribe(console.log);
     // ***********************************************
-    // observable cancellation example
-    const http$ = createHttpObservable("/api/courses");
-    const sub = http$.subscribe(console.log);
-    setTimeout(() => sub.unsubscribe(), 0);
+    // // observable cancellation example
+    // const http$ = createHttpObservable("/api/courses");
+    // const sub = http$.subscribe(console.log);
+    // setTimeout(() => sub.unsubscribe(), 0);
   }
 }
