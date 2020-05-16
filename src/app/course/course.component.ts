@@ -20,7 +20,7 @@ import {
   concatAll,
   shareReplay,
 } from "rxjs/operators";
-import { merge, fromEvent, Observable, concat } from "rxjs";
+import { merge, fromEvent, Observable, concat, forkJoin } from "rxjs";
 import { Lesson } from "../model/lesson";
 import { createHttpObservable } from "../common/util";
 import { debug, RxJsLoggingLevel, setRxJsLoggingLevel } from "../common/debug";
@@ -46,6 +46,20 @@ export class CourseComponent implements OnInit, AfterViewInit {
     // moved the below line to ngAfterViewInit as the lessons$ has to be changed after the user searches for a lesson
     // this.lessons$ = this.loadLessons();
     setRxJsLoggingLevel(RxJsLoggingLevel.DEBUG);
+
+    // // example of using forkJoin
+    // const course$ = createHttpObservable(`/api/courses/${this.courseId}`);
+    // const lessons$ = this.loadLessons();
+    // // fork join only emits value only when both observables complete
+    // // if any of the observable does not complete then the forkJoin won't emit anything
+    // forkJoin(course$, lessons$)
+    //   .pipe(
+    //     tap(([course, lessons]) => {
+    //       console.log("course", course);
+    //       console.log("lessons", lessons);
+    //     })
+    //   )
+    //   .subscribe();
   }
 
   ngAfterViewInit() {
