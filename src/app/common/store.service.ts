@@ -11,6 +11,7 @@ import {
   tap,
   finalize,
   catchError,
+  filter,
 } from "rxjs/operators";
 import { fromPromise } from "rxjs/internal-compatibility";
 
@@ -103,6 +104,13 @@ export class Store {
           "content-type": "application/json",
         },
       })
+    );
+  }
+
+  selectCourseById(courseId: number | string) {
+    return this.courses$.pipe(
+      map((courses) => courses.find((course) => course.id == courseId)),
+      filter((course) => !!course)
     );
   }
 }

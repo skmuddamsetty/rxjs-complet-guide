@@ -19,11 +19,13 @@ import {
   withLatestFrom,
   concatAll,
   shareReplay,
+  first,
 } from "rxjs/operators";
-import { merge, fromEvent, Observable, concat } from "rxjs";
+import { merge, fromEvent, Observable, concat, forkJoin } from "rxjs";
 import { Lesson } from "../model/lesson";
 import { createHttpObservable } from "../common/util";
 import { debug, RxJsLoggingLevel, setRxJsLoggingLevel } from "../common/debug";
+import { Store } from "../common/store.service";
 
 @Component({
   selector: "course",
@@ -36,7 +38,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
   courseId: string;
   @ViewChild("searchInput", { static: true }) input: ElementRef;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private store: Store) {}
 
   ngOnInit() {
     this.courseId = this.route.snapshot.params["id"];
@@ -46,6 +48,18 @@ export class CourseComponent implements OnInit, AfterViewInit {
     // moved the below line to ngAfterViewInit as the lessons$ has to be changed after the user searches for a lesson
     // this.lessons$ = this.loadLessons();
     setRxJsLoggingLevel(RxJsLoggingLevel.DEBUG);
+
+    // // example of using forkJoin
+    // this.course$ = this.store.selectCourseById(this.courseId).pipe(first());
+    // forkJoin(this.course$, this.loadLessons()).subscribe(console.log);
+
+    // // example of withLatestFrom
+    // this.loadLessons()
+    //   .pipe(withLatestFrom(this.course$))
+    //   .subscribe(([lessons, course]) => {
+    //     console.log("lessons", lessons);
+    //     console.log("course", course);
+    //   });
   }
 
   ngAfterViewInit() {
