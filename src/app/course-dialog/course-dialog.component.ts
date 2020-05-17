@@ -20,6 +20,7 @@ import {
   mergeMap,
 } from "rxjs/operators";
 import { fromPromise } from "rxjs/internal-compatibility";
+import { Store } from "../common/store.service";
 
 @Component({
   selector: "course-dialog",
@@ -37,7 +38,8 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CourseDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) course: Course
+    @Inject(MAT_DIALOG_DATA) course: Course,
+    private store: Store
   ) {
     this.course = course;
 
@@ -113,6 +115,13 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
           "content-type": "application/json",
         },
       })
+    );
+  }
+
+  save_to_store() {
+    this.store.saveCourse(this.course.id, this.form.value).subscribe(
+      () => this.close(),
+      (err) => console.log("Error Saving Course!", err)
     );
   }
 }
