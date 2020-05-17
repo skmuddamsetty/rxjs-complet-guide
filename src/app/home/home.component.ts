@@ -11,6 +11,7 @@ import {
   finalize,
 } from "rxjs/operators";
 import { createHttpObservable } from "../common/util";
+import { Store } from "../common/store.service";
 
 @Component({
   selector: "home",
@@ -22,7 +23,7 @@ export class HomeComponent implements OnInit {
   advancedCourses: Course[];
   beginnersCourses$: Observable<Course[]>;
   advancedCourses$: Observable<Course[]>;
-  constructor() {}
+  constructor(private store: Store) {}
 
   ngOnInit() {
     const http$ = createHttpObservable("/api/courses");
@@ -97,15 +98,21 @@ export class HomeComponent implements OnInit {
       retryWhen((errors) => errors.pipe(delayWhen(() => timer(2000))))
     );
 
-    this.beginnersCourses$ = courses$.pipe(
-      map((courses) =>
-        courses.filter((course) => course.category === "BEGINNER")
-      )
-    );
-    this.advancedCourses$ = courses$.pipe(
-      map((courses) =>
-        courses.filter((course) => course.category === "ADVANCED")
-      )
-    );
+    // commenting the below because we are initializing these observables with the data from store but not from the course$ which has been derived from the http service above
+    // this.beginnersCourses$ = courses$.pipe(
+    //   map((courses) =>
+    //     courses.filter((course) => course.category === "BEGINNER")
+    //   )
+    // );
+    // this.advancedCourses$ = courses$.pipe(
+    //   map((courses) =>
+    //     courses.filter((course) => course.category === "ADVANCED")
+    //   )
+    // );
+
+    // reading the courses Observable from store
+    const coursesFromStore$ = this.store.courses$;
+    this.beginnersCourses$ = this.store.selectBeginnerCourses();
+    this.advancedCourses$ = this.store.selectAdvancedCourses();
   }
 }
